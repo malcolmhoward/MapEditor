@@ -57,7 +57,51 @@ function Editor:OnLevelDestroy()
     m_InstanceParser:Clear()
 
 end
+function Editor:OnEntityCreate(p_Hook, p_Data, p_Transform)
+    local s_Entity = p_Hook:Call()
 
+    if(p_Data.instanceGuid == nil or not s_Entity:Is("SpatialEntity")) then
+        return
+    end
+    s_Entity = SpatialEntity(s_Entity)
+    m_ClientEntityManager:AddEntity(p_Data.instanceGuid, s_Entity)
+    local s_Params = {
+        instanceGuid = p_Data.instanceGuid,
+        name = p_Data.typeInfo.name,
+        partitionGuid = "625C2806-0CE7-11E0-915B-91EB202EAE87",
+        typeName = p_Data.typeInfo.name,
+        transform = tostring(p_Transform),
+        variation = 0
+    }
+    local s_Children = {}
+    s_Children[0] = {
+        guid = s_Entity.uniqueID,
+        type = s_Entity.typeInfo.name,
+        aabb = {
+            min = tostring(s_Entity.aabb.min),
+            max = tostring(s_Entity.aabb.max),
+            --trans = tostring(ToLocal(s_Entity.aabbTransform, s_Params.transform))
+        },
+        reference = {
+
+            instanceGuid = tostring(p_Data.instanceGuid),
+            --partitionGuid = tostring(s_Data.instanceGuid),
+            type = p_Data.typeInfo.name
+            -- transform?
+        }
+    }
+    local s_Response = {
+        guid = p_Data.instanceGuid,
+        sender = "Server",
+        name = p_Data.typeInfo.name,
+        ['type'] = 'SpawnedBlueprint',
+        parameters = s_Params,
+        children = s_Children
+    }
+
+    WebUI:ExecuteJS(string.format("editor.vext.HandleResponse('%s')", json.encode(self:EncodeParams(s_Response))))
+
+end
 
 
 function Editor:OnUpdate(p_Delta, p_SimulationDelta)

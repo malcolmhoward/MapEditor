@@ -184,7 +184,7 @@ class Hierarchy {
 
     }
     onSpawnedBlueprint(command) {
-    	console.log("Created group")
+//    	console.log("Created group")
 	   this.CreateGroup(command.guid, command.name, command.parent);
 	   let scope = this;
 	   for(let key in command.children) {

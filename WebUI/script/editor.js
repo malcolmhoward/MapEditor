@@ -33,7 +33,7 @@ class Editor {
 
 		 */
         this.playerName = null;
-        this.selected = [];
+        this.selected = null;
         this.raycastTransform = new LinearTransform();
         this.s2wTransform = new LinearTransform();
 
@@ -239,7 +239,7 @@ class Editor {
 		let scope = this;
 		//let webobject = this.webGL.CreateGroup(command.parameters.transform);
         //this.webobjects[command.guid] = webobject;
-        console.log("GO spawned");
+//        console.log("GO spawned");
         let gameObject = new GameObject(command.guid, command.name, new LinearTransform().setFromString(command.parameters.transform), command.parent, command.children, command.parameters);
 
 		this.webGL.AddObject(gameObject);
@@ -255,7 +255,7 @@ class Editor {
 			gameObject.add(childGO);
 
 		}
-
+		gameObject.visible = false;
 
 
 		this.gameObjects[command.guid] = gameObject;
@@ -280,10 +280,13 @@ class Editor {
 
     onSelectedEntity(command) {
     	let scope = this;
-    	let gameObject = cope.gameObjects[command.guid];
+    	let gameObject = scope.gameObjects[command.guid];
 		if(gameObject === undefined) {
 			scope.logger.LogError("Failed to select gameobject: " + command.guid);
 			return;
+		}
+		if(scope.selected != null) {
+			scope.selected.onDeselected();
 		}
 	    scope.selected = gameObject;
 

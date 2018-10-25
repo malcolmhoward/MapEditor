@@ -125,10 +125,12 @@ class GameObject extends THREE.Object3D
     }
 
     onSelected() {
+		this.visible = true;
+	    signals.objectChanged.dispatch(this)
 
     }
     onDeselected() {
-
+		this.visible = false;
     }
 
 }

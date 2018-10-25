@@ -17,7 +17,7 @@ class Logger {
             return false;
         }
         if(level <= this.logLevel) {
-            console.log(message)
+            //console.log(message)
         }
     }
 }

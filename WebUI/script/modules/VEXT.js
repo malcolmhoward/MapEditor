@@ -56,7 +56,7 @@ class VEXTInterface {
 			editor.logger.Log(LOGLEVEL.VERBOSE, commandRaw);
 			command = JSON.parse(commandRaw);
 		}
-		console.log(command);
+//		console.log(command);
 
 		if(this.commands[command.type] === undefined) {
 			editor.logger.LogError("Failed to call a null signal: " + command.type);
