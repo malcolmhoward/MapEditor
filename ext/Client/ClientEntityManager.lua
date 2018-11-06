@@ -21,7 +21,8 @@ function ClientEntityManager:Clear()
 end
 
 function ClientEntityManager:AddEntity(p_Guid, p_Entity)
-    self.m_SpawnedEntities[p_Guid] = p_Entity
+    print(p_Guid);
+    self.m_SpawnedEntities[p_Guid] = {p_Entity}
 end
 
 function ClientEntityManager:SpawnBlueprint(p_Guid, p_PartitionGuid, p_InstanceGuid, p_LinearTransform, p_Variation)

@@ -63,11 +63,21 @@ function Editor:OnEntityCreate(p_Hook, p_Data, p_Transform)
     if(p_Data.instanceGuid == nil or not s_Entity:Is("SpatialEntity")) then
         return
     end
+    local randomId = tostring(MathUtils:GetRandomInt(0, 99999999));
+
     s_Entity = SpatialEntity(s_Entity)
-    m_ClientEntityManager:AddEntity(p_Data.instanceGuid, s_Entity)
+    m_ClientEntityManager:AddEntity(randomId, s_Entity)
+
+    local s_Name = p_Data.typeInfo.name
+
+    if(p_Data:Is("GamePhysicsEntityData")) then
+        local s_Mesh = Asset(_G[p_Data.typeInfo.name](p_Data).mesh)
+        s_Name = s_Mesh.name
+    end
+
     local s_Params = {
         instanceGuid = p_Data.instanceGuid,
-        name = p_Data.typeInfo.name,
+        name = s_Name,
         partitionGuid = "625C2806-0CE7-11E0-915B-91EB202EAE87",
         typeName = p_Data.typeInfo.name,
         transform = tostring(p_Transform),
@@ -91,9 +101,9 @@ function Editor:OnEntityCreate(p_Hook, p_Data, p_Transform)
         }
     }
     local s_Response = {
-        guid = p_Data.instanceGuid,
+        guid = randomId,
         sender = "Server",
-        name = p_Data.typeInfo.name,
+        name = s_Name,
         ['type'] = 'SpawnedBlueprint',
         parameters = s_Params,
         children = s_Children
@@ -120,7 +130,7 @@ function Editor:OnReceiveCommand(p_Command)
     local s_Response = s_Function(self, s_Command)
     if(s_Response == false) then
         -- TODO: Handle errors
-        print("error")
+        print("error: OnReceiveCommand: No command?")
         return
     end
     WebUI:ExecuteJS(string.format("editor.vext.HandleResponse('%s')", json.encode(self:EncodeParams(s_Response))))
@@ -138,7 +148,7 @@ function Editor:OnReceiveMessage(p_Message)
     local s_Response = s_Function(self, s_Message)
     if(s_Response == false) then
         -- TODO: Handle errors
-        print("error")
+        print("error: OnReceiveMessage: No message?")
         return
     end
     -- Messages don't respond
@@ -221,12 +231,22 @@ end
 
 
 function Editor:SelectEntity(p_Command)
-
-    if ( m_ClientEntityManager:GetEntityByGuid(p_Command.guid) == nil) then
+    local s_Entities = m_ClientEntityManager:GetEntityByGuid(p_Command.guid);
+    if ( s_Entities == nil )then
+        print("failed to find an entity with guid: " .. p_Command.guid)
         return false
+    end
+    local s_Transform = LinearTransform();
+    for i, l_Entity in pairs(s_Entities) do
+        if(l_Entity.transform ~= nil) then
+            s_Transform = l_Entity.transform;
+        end
     end
     local s_Response = {
         guid = p_Command.guid,
+        parameters = {
+            transform = s_Transform
+        },
         ['type'] = 'SelectedEntity'
     }
    return s_Response
@@ -389,4 +409,14 @@ function Editor:EncodeParams(p_Table)
 
 	return p_Table
 end
+
+
+local function uuid()
+    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    return string.gsub(template, '[xy]', function (c)
+        local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+        return string.format('%x', v)
+    end)
+end
+
 return Editor()

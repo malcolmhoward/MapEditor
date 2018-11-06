@@ -222,6 +222,7 @@ class Inspector {
 		this.name[0].value = name;
 	}
 	UpdateVariation(go, variation) {
+		/*
 		// We're refreshing the whole thing. Might as well, right?
 		let blueprint =  editor.blueprintManager.getBlueprintByGuid(go.parameters.reference.instanceGuid);
 		if(!blueprint.hasVariation()){
@@ -239,6 +240,7 @@ class Inspector {
 			}
 		}
 		this.variation.find("option[value=" + variation  + "]").attr("selected",true);
+		*/
 	}
 }
 

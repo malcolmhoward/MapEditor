@@ -283,6 +283,7 @@ class Editor {
 
     onSelectedEntity(command) {
     	let scope = this;
+    	console.log(command);
     	let gameObject = scope.gameObjects[command.guid];
 		if(gameObject === undefined) {
 			scope.logger.LogError("Failed to select gameobject: " + command.guid);
@@ -291,6 +292,7 @@ class Editor {
 		if(scope.selected != null) {
 			scope.selected.onDeselected();
 		}
+		gameObject.setTransform(new LinearTransform().setFromString(command.parameters.transform));
 	    scope.selected = gameObject;
 
 		//TODO: make this not ugly.

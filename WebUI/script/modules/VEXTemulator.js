@@ -70,6 +70,9 @@ class VEXTemulator {
 		let response = {
 			"type": "SelectedEntity",
 			"guid": command.guid,
+			"parameters": {
+				"transform": new LinearTransform().toString()
+			},
 			"aabb": "notimplemented"
 		}
 		editor.vext.HandleResponse(response);

@@ -41,7 +41,6 @@ class Hierarchy {
 		scope.entries[command.guid] = entry;
 		scope.data.children[scope.data.children.length] = entry;
 
-		scope.dom.jstree(true).refresh();
 	}
 
 	onDestroyedBlueprint(command) {
@@ -107,21 +106,10 @@ class Hierarchy {
 		return dom;
 	}
 
-<<<<<<< HEAD
     DestroyEntity(guid) {
 
     }
-    onSpawnedBlueprint(command) {
-//    	console.log("Created group")
-	   this.CreateGroup(command.guid, command.name, command.parent);
-	   let scope = this;
-	   for(let key in command.children) {
-	       let child = command.children[key];
-		   scope.CreateEntity(child.guid, child.type, command.guid);
-	   }
-    }
-=======
->>>>>>> origin/History_Implementation
+
 
 	onMoved(nodeData) {
 		// TODO: update data with the changes
